@@ -4,47 +4,36 @@ program ConsoleProject;
 {$R *.res}
 
 uses
-  System.SysUtils,
+  FastMM5Init in '..\..\FastMM5Init.pas',
   FastMM5 in '..\..\FastMM5.pas',
-  FastMM5Init in '..\..\FastMM5Init.pas';
-
-var
-  res: string;
+  System.SysUtils;
 
 begin
   try
-    Writeln('salam');
+    FastMM_Start;
 
-    FastMM_NeverUninstall := true;
-    FastMM_MessageBoxEvents := FastMM_MessageBoxEvents +
-      [mmetUnexpectedMemoryLeakSummary];
-    FastMM_EnterDebugMode;
+    Writeln('0');
+    FastMM_Report;
 
-    Readln(res);
-
-    if res = 'e' then
-    begin
-      FastMM_Report;
-
-    end;
-
-    Readln(res);
     var
     obj := TObject.Create;
-    if res = 'e' then
-    begin
-      FastMM_Report;
-    end;
 
-    Readln(res);
-    //
-    if res = 'e' then
-    begin
-      FastMM_Report;
-    end;
+    Writeln('1');
+    FastMM_Report;
 
-    FastMM_MessageBoxEvents := [];
-    FastMM_ExitDebugMode;
+    var
+    objd := TObject.Create;
+
+    Writeln('2');
+    FastMM_Report;
+
+    var
+    objs := TObject.Create;
+
+    Writeln('3');
+    FastMM_Report;
+
+    FastMM_Stop;
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);

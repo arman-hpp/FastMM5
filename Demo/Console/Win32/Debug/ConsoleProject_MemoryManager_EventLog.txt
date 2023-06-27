@@ -1,0 +1,4 @@
+--------------------------------2023-06-27 07:05:55--------------------------------
+FastMM cannot be installed, because the default memory manager has already been used to allocate memory.
+--------------------------------2023-06-27 07:06:12--------------------------------
+FastMM cannot be installed, because the default memory manager has already been used to allocate memory.

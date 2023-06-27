@@ -141,7 +141,7 @@ const
 {$ENDIF}
   { The default name of debug support library. }
   CFastMM_DefaultDebugSupportLibraryName =
-  {$IFNDEF 64Bit}'FastMM_FullDebugMode.dll'{$ELSE}'FastMM_FullDebugMode64.dll'{$ENDIF};
+{$IFNDEF 64Bit}'FastMM_FullDebugMode.dll'{$ELSE}'FastMM_FullDebugMode64.dll'{$ENDIF};
 
 type
 
@@ -10886,12 +10886,8 @@ begin
     Exit;
   end;
 
-  // if FastMM_SetNormalOrDebugMemoryManager then
-  // begin
   CurrentInstallationState := mmisInstalled;
-
   EnsureEmergencyReserveAddressSpaceAllocated;
-  // end;
 end;
 
 procedure FastMM_UninstallMemoryManager;
