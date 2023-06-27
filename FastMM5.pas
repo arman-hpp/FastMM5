@@ -100,10 +100,6 @@ Usage Instructions:
     FastMM_5Arenas, FastMM_6Arenas .. FastMM_16Arenas - Increases the number of arenas from the default values.  See the
     notes for the CFastMM_SmallBlockArenaCount constant for guidance on the appropriate number of arenas.
 
-    FastMM_DisableAutomaticInstall - Disables automatic installation of FastMM as the memory manager.  If defined then
-    FastMM_Initialize should be called from application code in order to install FastMM, and FastMM_Finalize to
-    uninstall and perform the leak check (if enabled), etc.
-
     FastMM_EnableMemoryLeakReporting (or EnableMemoryLeakReporting) - If defined then the memory leak summary and detail
     will be added to the set of events logged to file (FastMM_LogToFileEvents) and the leak summary will be added to the
     set of events displayed on-screen (FastMM_MessageBoxEvents).
@@ -586,8 +582,7 @@ function FastMM_ShareMemoryManager: Boolean;
 {------------------------Configuration------------------------}
 
 {Executes the initialization and finalization code for the memory manager.  FastMM_Initialize will run during unit
-initialization and FastMM_Finalize during unit finalization, unless "FastMM_DisableAutomaticInstall" is defined.  If
-"FastMM_DisableAutomaticInstall" is defined then FastMM_Initialize must be called from application code in order to
+initialization and FastMM_Finalize during unit finalization. FastMM_Initialize must be called from application code in order to
 initialize and install the memory manager, and FastMM_Finalize must be called to uninstall it and perform leak checks,
 etc.  Note that FastMM cannot be installed if another third party memory manager has already been installed, or if
 memory has already been allocated through the default memory manager.  FastMM_Initialize will return True on successful
@@ -10447,13 +10442,5 @@ begin
 
   Result := True;
 end;
-
-{$ifndef FastMM_DisableAutomaticInstall}
-initialization
-  FastMM_Initialize;
-
-finalization
-  FastMM_Finalize;
-{$endif}
 
 end.
