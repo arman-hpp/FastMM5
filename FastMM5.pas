@@ -168,6 +168,13 @@ type
     mmetDebugBlockModifiedAfterFree,
     { When a virtual method is called on a freed object. }
     mmetVirtualMethodCallOnFreedObject);
+
+  TFastMM_OutputType = (
+    mmotMessageBox,
+    mmotFile
+  );
+
+
   TFastMM_MemoryManagerEventTypeSet = set of TFastMM_MemoryManagerEventType;
 
   TFastMM_MemoryManagerInstallationState = (

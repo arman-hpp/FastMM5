@@ -7,6 +7,8 @@ uses
 
 function FastMM_Start: Boolean;
 function FastMM_Stop: Boolean;
+procedure FastMM_SetOutput(outputType: TFastMM_OutputType;
+  memoryManagerEventTypes: TFastMM_MemoryManagerEventTypeSet);
 
 implementation
 
@@ -17,10 +19,6 @@ begin
     if FastMM_LoadDebugSupportLibrary then
     begin
       FastMM_EnterDebugMode;
-
-      // FastMM_MessageBoxEvents := FastMM_MessageBoxEvents + [mmetUnexpectedMemoryLeakDetail];
-      FastMM_MessageBoxEvents := FastMM_MessageBoxEvents +
-        [mmetUnexpectedMemoryLeakSummary];
     end;
   end
   else
@@ -32,6 +30,33 @@ end;
 function FastMM_Stop: Boolean;
 begin
   FastMM_ExitDebugMode;
+end;
+
+procedure FastMM_SetOutput(outputType: TFastMM_OutputType;
+  memoryManagerEventTypes: TFastMM_MemoryManagerEventTypeSet);
+begin
+  FastMM_OutputDebugStringEvents := [];
+  FastMM_MessageBoxEvents := [];
+  FastMM_LogToFileEvents := [];
+
+  if outputType = mmotMessageBox then
+  begin
+    FastMM_MessageBoxEvents := FastMM_MessageBoxEvents +
+      memoryManagerEventTypes;
+  end
+  else if outputType = mmotFile then
+  begin
+    FastMM_SetEventLogFilename('MemoryReports.txt');
+    FastMM_LogToFileEvents := FastMM_LogToFileEvents + memoryManagerEventTypes;
+  end
+  else if outputType = mmotConsole then
+  begin
+    FastMM_OutputDebugStringEvents := FastMM_LogToFileEvents + memoryManagerEventTypes;
+  end;
+
+
+
+
 end;
 
 initialization

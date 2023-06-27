@@ -12,6 +12,9 @@ begin
   try
     FastMM_Start;
 
+    // FastMM_SetOutput(mmotMessageBox, mmetUnexpectedMemoryLeakDetail);
+    FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
+
     Writeln('0');
     FastMM_Report;
 
