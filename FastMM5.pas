@@ -473,6 +473,9 @@ type
     EfficiencyPercentage: Double;
   end;
 
+{------------------------Report leaks------------------------}
+function FastMM_Report: Boolean;
+
 {------------------------Core memory manager interface------------------------}
 function FastMM_GetMem(ASize: NativeInt): Pointer;
 function FastMM_FreeMem(APointer: Pointer): Integer;
@@ -10439,6 +10442,28 @@ begin
     application from running out of address space.}
     FastMM_FreeAllMemory;
   end;
+
+  Result := True;
+end;
+
+function FastMM_Report: Boolean;
+begin
+  if not UnitCurrentlyInitialized then
+    Exit(False);
+
+  { Prevent a potential crash when the finalization code in system.pas tries to free PreferredLanguagesOverride after
+    FastMM has been uninstalled:  https://quality.embarcadero.com/browse/RSP-16796 }
+  if CurrentInstallationState = mmisInstalled then
+    SetLocaleOverride('');
+
+  {All pending frees must be released before a leak check can be performed.}
+  FastMM_ProcessAllPendingFrees;
+
+  { Do a memory leak check if required. }
+  if [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary] *
+    (FastMM_OutputDebugStringEvents + FastMM_LogToFileEvents +
+    FastMM_MessageBoxEvents) <> [] then
+    FastMM_PerformMemoryLeakCheck;
 
   Result := True;
 end;
