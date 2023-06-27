@@ -1,7 +1,5 @@
 {
   FastMM 5.05
-
-  Description:
   A fast replacement memory manager for Embarcadero Delphi applications that scales well across multiple threads and CPU
   cores, is not prone to memory fragmentation, and supports shared memory without the use of external .DLL files.
 }
