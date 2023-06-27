@@ -1,41 +1,8 @@
 # FastMM5
 FastMM is a fast replacement memory manager for Embarcadero Delphi applications that scales well across multiple threads and CPU cores, is not prone to memory fragmentation, and supports shared memory without the use of external .DLL files.
 
-![FastMM5-social.png](Images/FastMM5-social.png "FastMM5-social.png")
-
-Version 5 is a complete rewrite of FastMM. It is designed from the ground up to simultaneously keep the strengths and address the shortcomings of version 4.992:
-* Multithreaded scaling across multiple CPU cores is massively improved, without memory usage blowout. It can be configured to scale close to linearly for any number of CPU cores.
-* In the Fastcode memory manager benchmark tool FastMM 5 scores 15% higher than FastMM 4.992 on the single threaded benchmarks, and 30% higher on the multithreaded benchmarks. (I7-8700K CPU, EnableMMX and AssumeMultithreaded options enabled.)
-* It is fully configurable runtime. There is no need to change conditional defines and recompile to change options. (It is however backward compatible with many of the version 4 conditional defines.) 
-* Debug mode uses the same debug support library as version 4 (FastMM_FullDebugMode.dll) by default, but custom stack trace routines are also supported. Call FastMM_EnterDebugMode to switch to debug mode ("FullDebugMode") and call FastMM_ExitDebugMode to return to performance mode. Calls may be nested, in which case debug mode will be exited after the last FastMM_ExitDebugMode call.
-* Supports 8, 16, 32 or 64 byte alignment of all blocks. Call FastMM_EnterMinimumAddressAlignment to request a minimum block alignment, and FastMM_ExitMinimumAddressAlignment to rescind a prior request. Calls may be nested, in which case the coarsest alignment request will be in effect.
-* All event notifications (errors, memory leak messages, etc.) may be routed to the debugger (via OutputDebugString), a log file, the screen or any combination of the three. Messages are built using templates containing mail-merge tokens. Templates may be changed runtime to facilitate different layouts and/or translation into any language. Templates fully support Unicode, and the log file may be configured to be written in UTF-8 or UTF-16 format, with or without a BOM.
-* It may be configured runtime to favour speed, memory usage efficiency or a blend of the two via the FastMM_SetOptimizationStrategy call.
-
-Homepage: https://github.com/pleriche/FastMM5
-
 ### Developed by
-Pierre le Riche, copyright 2004 - 2020, all rights reserved
-
-### Sponsored by
-[gs-soft AG](https://www.gs-soft.com/)
-
-### Licence
-FastMM 5 is dual-licensed.  You may choose to use it under the restrictions of the GPL v3 licence at no cost to you, or you may purchase a commercial licence.  A commercial licence grants you the right to use FastMM5 in your own applications, royalty free, and without any requirement to disclose your source code nor any modifications to FastMM to any other party.  A commercial licence lasts into perpetuity, and entitles you to all future updates, free of charge.  A commercial licence is sold per developer developing applications that use FastMM, as follows:
-<table>
-<tr><td>Number Of Developers</td><td>Price (USD)</td></tr>
-<tr><td>1 developer</td><td>$99</td></tr>
-<tr><td>2 developers</td><td>$189</td></tr>
-<tr><td>3 developers</td><td>$269</td></tr>
-<tr><td>4 developers</td><td>$339</td></tr>
-<tr><td>5 developers</td><td>$399</td></tr>
-<tr><td>More than 5 developers</td><td>$399 + $50 per developer from the 6th onwards</td></tr>
-<tr><td>Site licence (unlimited number of developers affiliated with the owner of the licence, i.e. employees, co-workers, interns and contractors)</td><td>$999</td></tr>
-</table>
-
-Please send an e-mail to fastmm@leriche.org to request an invoice before or after payment is made.  Payment may be made via PayPal at https://www.paypal.me/fastmm (paypal@leriche.org), or via bank transfer.  Bank details will be provided on the invoice.
-
-Support (via e-mail) is available for users with a commercial licence.  Enhancement requests submitted by users with a commercial licence will be prioritized.
+Arman Hasanpour, copyright 2023, all rights reserved
 
 ### Usage Instructions
 Add FastMM5.pas as the first unit in your project's DPR file.  It will install itself automatically during startup, replacing the default memory manager.
