@@ -26,5 +26,5 @@ initialization
   end;
   
 finalization
-  FastMM_ExitDebugMode
+  FastMM_ExitDebugMode;
   FastMM_Finalize;
