@@ -1,9 +1,6 @@
 # FastMM5
 FastMM is a fast replacement memory manager for Embarcadero Delphi applications that scales well across multiple threads and CPU cores, is not prone to memory fragmentation, and supports shared memory without the use of external .DLL files.
 
-### Developed by
-Arman Hasanpour, copyright 2023, all rights reserved
-
 ### Usage Instructions
 Add FastMM5.pas as the first unit in your project's DPR file.  It will install itself automatically during startup, replacing the default memory manager.
 
