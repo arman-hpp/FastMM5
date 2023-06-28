@@ -101,7 +101,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\..\FastMM5Init.pas"/>
+        <DCCReference Include="..\..\FastMM5Wrapper.pas"/>
         <DCCReference Include="..\..\FastMM5.pas">
             <Form>/,</Form>
         </DCCReference>

@@ -4,8 +4,8 @@ program ConsoleProject;
 {$R *.res}
 
 uses
-  FastMM5Init in '..\..\FastMM5Init.pas',
-  FastMM5 in '..\..\FastMM5.pas',
+  FastMM5Wrapper in '..\..\FastMM5Wrapper.pas',
+  FastMM5 in '..\..\FastMM5.pas' ,
   System.SysUtils;
 
 type
@@ -17,6 +17,10 @@ type
 
 procedure TLogger.Log(const APText, APCaption: PWideChar);
 begin
+
+
+
+
   Writeln(APText, APCaption);
 end;
 
@@ -28,9 +32,9 @@ begin
     FastMM_Start;
 
     // FastMM_SetOutput(mmotMessageBox, mmetUnexpectedMemoryLeakDetail);
-    // FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
+     FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
     // FastMM_SetOutput(mmotConsole, [mmetUnexpectedMemoryLeakSummary]);
-    FastMM_SetOutput(mmotExternalEvent, [mmetUnexpectedMemoryLeakSummary]);
+   // FastMM_SetOutput(mmotExternalEvent, [mmetUnexpectedMemoryLeakSummary]);
 
     FASTMM_ReportEvent := logger.Log;
 

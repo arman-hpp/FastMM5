@@ -1,4 +1,4 @@
-unit FastMM5Init;
+unit FastMM5Wrapper;
 
 interface
 
