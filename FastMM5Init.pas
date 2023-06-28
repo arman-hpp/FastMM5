@@ -63,7 +63,8 @@ begin
   else if outputType = mmotExternalEvent then
   begin
     FastMM_ExternalEvents := FastMM_ExternalEvents + memoryManagerEventTypes;
-  end;
+  end
+  else
   begin
     FastMM_OutputDebugStringEvents := FastMM_OutputDebugStringEvents +
       memoryManagerEventTypes;
@@ -76,7 +77,11 @@ FastMM_Initialize;
 
 finalization
 
+FastMM_OutputDebugStringEvents := [];
 FastMM_MessageBoxEvents := [];
+FastMM_LogToFileEvents := [];
+FastMM_ConsoleEvents := [];
+FastMM_ExternalEvents := [];
 FastMM_Finalize;
 
 end.

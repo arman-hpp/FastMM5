@@ -28,9 +28,8 @@ begin
     FastMM_Start;
 
     // FastMM_SetOutput(mmotMessageBox, mmetUnexpectedMemoryLeakDetail);
-    //FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
+    // FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
     // FastMM_SetOutput(mmotConsole, [mmetUnexpectedMemoryLeakSummary]);
-
     FastMM_SetOutput(mmotExternalEvent, [mmetUnexpectedMemoryLeakSummary]);
 
     FASTMM_ReportEvent := logger.Log;
