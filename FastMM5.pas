@@ -170,7 +170,7 @@ type
     { When a virtual method is called on a freed object. }
     mmetVirtualMethodCallOnFreedObject);
 
-  TFastMM_OutputType = (mmotMessageBox, mmotFile, mmotDebugOutput, mmotConsole);
+  TFastMM_OutputType = (mmotMessageBox, mmotFile, mmotDebugOutput, mmotConsole, mmotExternalEvent);
 
   TFastMM_MemoryManagerEventTypeSet = set of TFastMM_MemoryManagerEventType;
 
@@ -339,7 +339,7 @@ type
     EfficiencyPercentage: Double;
   end;
 
-{ ------------------------Report leaks------------------------ }
+  { ------------------------Report leaks------------------------ }
 function FastMM_Report: Boolean;
 
 { ------------------------Core memory manager interface------------------------ }
@@ -622,6 +622,13 @@ var
     mmetCannotInstallAfterDefaultMemoryManagerHasBeenUsed,
     mmetCannotSwitchToSharedMemoryManagerWithLivePointers];
   FastMM_ConsoleEvents: TFastMM_MemoryManagerEventTypeSet =
+    [mmetDebugBlockDoubleFree, mmetDebugBlockReallocOfFreedBlock,
+    mmetDebugBlockHeaderCorruption, mmetDebugBlockFooterCorruption,
+    mmetDebugBlockModifiedAfterFree, mmetVirtualMethodCallOnFreedObject,
+    mmetAnotherThirdPartyMemoryManagerAlreadyInstalled,
+    mmetCannotInstallAfterDefaultMemoryManagerHasBeenUsed,
+    mmetCannotSwitchToSharedMemoryManagerWithLivePointers];
+  FastMM_ExternalEvents: TFastMM_MemoryManagerEventTypeSet =
     [mmetDebugBlockDoubleFree, mmetDebugBlockReallocOfFreedBlock,
     mmetDebugBlockHeaderCorruption, mmetDebugBlockFooterCorruption,
     mmetDebugBlockModifiedAfterFree, mmetVirtualMethodCallOnFreedObject,
@@ -3744,11 +3751,14 @@ begin
   { Store the trailing #0. }
   LPBuffer^ := #0;
 
-  if Assigned(FASTMM_ReportEvent) then
+  if AEventType in FastMM_ExternalEvents then
   begin
-    CloseEventLogFile;
+    if Assigned(FASTMM_ReportEvent) then
+    begin
+      CloseEventLogFile;
 
-    FASTMM_ReportEvent(LPBodyStart, LPMessageBoxCaption);
+      FASTMM_ReportEvent(LPBodyStart, LPMessageBoxCaption);
+    end;
   end;
 
   { Log the message to file, if needed. }
@@ -10181,7 +10191,7 @@ begin
   { If individual leaks must be reported, report the leak now. }
   if mmetUnexpectedMemoryLeakDetail
     in (FastMM_OutputDebugStringEvents + FastMM_LogToFileEvents +
-    FastMM_MessageBoxEvents + FastMM_ConsoleEvents) then
+    FastMM_MessageBoxEvents + FastMM_ConsoleEvents + FastMM_ExternalEvents) then
   begin
     LTokenValues := Default (TEventLogTokenValues);
 
@@ -10321,7 +10331,7 @@ begin
   { Build the leak summary by walking all the block categories. }
   if (LLeakSummary.LeakCount > 0) and
     (mmetUnexpectedMemoryLeakSummary in (FastMM_OutputDebugStringEvents +
-    FastMM_LogToFileEvents + FastMM_MessageBoxEvents + FastMM_ConsoleEvents))
+    FastMM_LogToFileEvents + FastMM_MessageBoxEvents + FastMM_ConsoleEvents + FastMM_ExternalEvents))
   then
   begin
     FastMM_PerformMemoryLeakCheck_LogLeakSummary(LLeakSummary);
@@ -11285,7 +11295,7 @@ begin
   { Do a memory leak check if required. }
   if [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary] *
     (FastMM_OutputDebugStringEvents + FastMM_LogToFileEvents +
-    FastMM_MessageBoxEvents + FastMM_ConsoleEvents) <> [] then
+    FastMM_MessageBoxEvents + FastMM_ConsoleEvents + FastMM_ExternalEvents) <> [] then
     FastMM_PerformMemoryLeakCheck;
 
   if not FastMM_NeverUninstall then
@@ -11317,7 +11327,7 @@ begin
   { Do a memory leak check if required. }
   if [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary] *
     (FastMM_OutputDebugStringEvents + FastMM_LogToFileEvents +
-    FastMM_MessageBoxEvents + FastMM_ConsoleEvents) <> [] then
+    FastMM_MessageBoxEvents + FastMM_ConsoleEvents + FastMM_ExternalEvents) <> [] then
     FastMM_PerformMemoryLeakCheck;
 
   Result := True;

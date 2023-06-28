@@ -17,7 +17,7 @@ type
 
 procedure TLogger.Log(const APText, APCaption: PWideChar);
 begin
-  Writeln(APText, '---------------', APCaption);
+  Writeln(APText, APCaption);
 end;
 
 var
@@ -28,8 +28,10 @@ begin
     FastMM_Start;
 
     // FastMM_SetOutput(mmotMessageBox, mmetUnexpectedMemoryLeakDetail);
-    FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
+    //FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
     // FastMM_SetOutput(mmotConsole, [mmetUnexpectedMemoryLeakSummary]);
+
+    FastMM_SetOutput(mmotExternalEvent, [mmetUnexpectedMemoryLeakSummary]);
 
     FASTMM_ReportEvent := logger.Log;
 
