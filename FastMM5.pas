@@ -169,11 +169,7 @@ type
     { When a virtual method is called on a freed object. }
     mmetVirtualMethodCallOnFreedObject);
 
-  TFastMM_OutputType = (
-    mmotMessageBox,
-    mmotFile
-  );
-
+  TFastMM_OutputType = (mmotMessageBox, mmotFile, mmotDebugOutput, mmotConsole);
 
   TFastMM_MemoryManagerEventTypeSet = set of TFastMM_MemoryManagerEventType;
 
@@ -617,6 +613,13 @@ var
     mmetCannotSwitchToSharedMemoryManagerWithLivePointers];
   { The events that are displayed in a message box. }
   FastMM_MessageBoxEvents: TFastMM_MemoryManagerEventTypeSet =
+    [mmetDebugBlockDoubleFree, mmetDebugBlockReallocOfFreedBlock,
+    mmetDebugBlockHeaderCorruption, mmetDebugBlockFooterCorruption,
+    mmetDebugBlockModifiedAfterFree, mmetVirtualMethodCallOnFreedObject,
+    mmetAnotherThirdPartyMemoryManagerAlreadyInstalled,
+    mmetCannotInstallAfterDefaultMemoryManagerHasBeenUsed,
+    mmetCannotSwitchToSharedMemoryManagerWithLivePointers];
+  FastMM_ConsoleEvents: TFastMM_MemoryManagerEventTypeSet =
     [mmetDebugBlockDoubleFree, mmetDebugBlockReallocOfFreedBlock,
     mmetDebugBlockHeaderCorruption, mmetDebugBlockFooterCorruption,
     mmetDebugBlockModifiedAfterFree, mmetVirtualMethodCallOnFreedObject,
@@ -2570,6 +2573,11 @@ begin
   Winapi.Windows.OutputDebugString(APDebugMessage);
 end;
 
+procedure OS_Console(APDebugMessage: PWideChar); inline;
+begin
+  Writeln(APDebugMessage);
+end;
+
 { Shows a message box if the program is not showing one already. }
 procedure OS_ShowMessageBox(APText, APCaption: PWideChar);
 begin
@@ -3750,6 +3758,11 @@ begin
   if AEventType in FastMM_OutputDebugStringEvents then
   begin
     OS_OutputDebugString(LPLogHeaderStart);
+  end;
+
+  if AEventType in FastMM_ConsoleEvents then
+  begin
+    OS_Console(LPLogHeaderStart);
   end;
 
   if AEventType in FastMM_MessageBoxEvents then
@@ -10159,7 +10172,7 @@ begin
   { If individual leaks must be reported, report the leak now. }
   if mmetUnexpectedMemoryLeakDetail
     in (FastMM_OutputDebugStringEvents + FastMM_LogToFileEvents +
-    FastMM_MessageBoxEvents) then
+    FastMM_MessageBoxEvents + FastMM_ConsoleEvents) then
   begin
     LTokenValues := Default (TEventLogTokenValues);
 
@@ -10299,7 +10312,7 @@ begin
   { Build the leak summary by walking all the block categories. }
   if (LLeakSummary.LeakCount > 0) and
     (mmetUnexpectedMemoryLeakSummary in (FastMM_OutputDebugStringEvents +
-    FastMM_LogToFileEvents + FastMM_MessageBoxEvents)) then
+    FastMM_LogToFileEvents + FastMM_MessageBoxEvents + FastMM_ConsoleEvents)) then
   begin
     FastMM_PerformMemoryLeakCheck_LogLeakSummary(LLeakSummary);
   end;
@@ -10419,6 +10432,7 @@ begin
   { Rebuild the small block type lookup table if the minimum alignment changed. }
   if LOldMinimumAlignment <> FastMM_GetCurrentMinimumAddressAlignment then
     FastMM_BuildSmallBlockTypeLookupTable;
+
 end;
 
 { Returns the current minimum address alignment in effect. }
@@ -11261,7 +11275,7 @@ begin
   { Do a memory leak check if required. }
   if [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary] *
     (FastMM_OutputDebugStringEvents + FastMM_LogToFileEvents +
-    FastMM_MessageBoxEvents) <> [] then
+    FastMM_MessageBoxEvents + FastMM_ConsoleEvents) <> [] then
     FastMM_PerformMemoryLeakCheck;
 
   if not FastMM_NeverUninstall then
@@ -11293,7 +11307,7 @@ begin
   { Do a memory leak check if required. }
   if [mmetUnexpectedMemoryLeakDetail, mmetUnexpectedMemoryLeakSummary] *
     (FastMM_OutputDebugStringEvents + FastMM_LogToFileEvents +
-    FastMM_MessageBoxEvents) <> [] then
+    FastMM_MessageBoxEvents + FastMM_ConsoleEvents) <> [] then
     FastMM_PerformMemoryLeakCheck;
 
   Result := True;

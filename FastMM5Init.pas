@@ -38,6 +38,7 @@ begin
   FastMM_OutputDebugStringEvents := [];
   FastMM_MessageBoxEvents := [];
   FastMM_LogToFileEvents := [];
+  FastMM_ConsoleEvents := [];
 
   if outputType = mmotMessageBox then
   begin
@@ -51,12 +52,13 @@ begin
   end
   else if outputType = mmotConsole then
   begin
-    FastMM_OutputDebugStringEvents := FastMM_LogToFileEvents + memoryManagerEventTypes;
+    FastMM_ConsoleEvents := FastMM_ConsoleEvents + memoryManagerEventTypes;
+  end
+  else if outputType = mmotDebugOutput then
+  begin
+    FastMM_OutputDebugStringEvents := FastMM_OutputDebugStringEvents +
+      memoryManagerEventTypes;
   end;
-
-
-
-
 end;
 
 initialization

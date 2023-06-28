@@ -13,7 +13,8 @@ begin
     FastMM_Start;
 
     // FastMM_SetOutput(mmotMessageBox, mmetUnexpectedMemoryLeakDetail);
-    FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
+    // FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
+    FastMM_SetOutput(mmotConsole, [mmetUnexpectedMemoryLeakSummary]);
 
     Writeln('0');
     FastMM_Report;
@@ -37,6 +38,9 @@ begin
     FastMM_Report;
 
     FastMM_Stop;
+
+    var s: string;
+    Readln(s);
   except
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
