@@ -8,13 +8,30 @@ uses
   FastMM5 in '..\..\FastMM5.pas',
   System.SysUtils;
 
+type
+  TLogger = class
+    procedure Log(const APText, APCaption: PWideChar);
+  end;
+
+  { TLogger }
+
+procedure TLogger.Log(const APText, APCaption: PWideChar);
+begin
+  Writeln(APText, '---------------', APCaption);
+end;
+
+var
+  logger: TLogger;
+
 begin
   try
     FastMM_Start;
 
     // FastMM_SetOutput(mmotMessageBox, mmetUnexpectedMemoryLeakDetail);
-    // FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
-    FastMM_SetOutput(mmotConsole, [mmetUnexpectedMemoryLeakSummary]);
+    FastMM_SetOutput(mmotMessageBox, [mmetUnexpectedMemoryLeakSummary]);
+    // FastMM_SetOutput(mmotConsole, [mmetUnexpectedMemoryLeakSummary]);
+
+    FASTMM_ReportEvent := logger.Log;
 
     Writeln('0');
     FastMM_Report;
@@ -39,7 +56,8 @@ begin
 
     FastMM_Stop;
 
-    var s: string;
+    var
+      s: string;
     Readln(s);
   except
     on E: Exception do

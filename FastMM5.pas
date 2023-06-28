@@ -144,6 +144,7 @@ const
 {$IFNDEF 64Bit}'FastMM_FullDebugMode.dll'{$ELSE}'FastMM_FullDebugMode64.dll'{$ENDIF};
 
 type
+  TFastMM_ReportEvent = procedure(const APText, APCaption: PWideChar) of object;
 
   { The optimization strategy for the memory manager. }
   TFastMM_MemoryManagerOptimizationStrategy = (mmosOptimizeForSpeed,
@@ -338,7 +339,7 @@ type
     EfficiencyPercentage: Double;
   end;
 
-  { ------------------------Report leaks------------------------ }
+{ ------------------------Report leaks------------------------ }
 function FastMM_Report: Boolean;
 
 { ------------------------Core memory manager interface------------------------ }
@@ -566,6 +567,7 @@ function FastMM_GetEventLogFilename: PWideChar;
 function FastMM_DeleteEventLogFile: Boolean;
 
 var
+  FASTMM_ReportEvent: TFastMM_ReportEvent;
 
   { -----------Stack trace support routines---------- }
   { The active routines used to get a call stack and to convert it to a textual representation.  These will be set to
@@ -3741,6 +3743,13 @@ begin
 
   { Store the trailing #0. }
   LPBuffer^ := #0;
+
+  if Assigned(FASTMM_ReportEvent) then
+  begin
+    CloseEventLogFile;
+
+    FASTMM_ReportEvent(LPBodyStart, LPMessageBoxCaption);
+  end;
 
   { Log the message to file, if needed. }
   if AEventType in FastMM_LogToFileEvents then
@@ -10312,7 +10321,8 @@ begin
   { Build the leak summary by walking all the block categories. }
   if (LLeakSummary.LeakCount > 0) and
     (mmetUnexpectedMemoryLeakSummary in (FastMM_OutputDebugStringEvents +
-    FastMM_LogToFileEvents + FastMM_MessageBoxEvents + FastMM_ConsoleEvents)) then
+    FastMM_LogToFileEvents + FastMM_MessageBoxEvents + FastMM_ConsoleEvents))
+  then
   begin
     FastMM_PerformMemoryLeakCheck_LogLeakSummary(LLeakSummary);
   end;
